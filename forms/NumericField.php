@@ -73,3 +73,13 @@ class NumericField extends TextField {
 		return $number;
 	}
 }
+
+class NumericField_Readonly extends ReadonlyField{
+    public function performReadonlyTransformation() {
+        return clone $this;
+    }
+    public function Value() {
+        return Convert::raw2xml($this->value ?
+            "$this->value" : "0");
+    }
+}
