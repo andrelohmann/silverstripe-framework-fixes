@@ -9,7 +9,7 @@
 
 This repository includes Fixes for the current Version of the Silverstripe Framework Module.
 
-Current stable Version is: 3.1.7
+Current stable Version is: 3.1.8
 
 ## Installation
 
