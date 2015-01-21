@@ -75,11 +75,12 @@ class NumericField extends TextField {
 }
 
 class NumericField_Readonly extends ReadonlyField{
-    public function performReadonlyTransformation() {
-        return clone $this;
-    }
-    public function Value() {
-        return Convert::raw2xml($this->value ?
-            "$this->value" : "0");
-    }
+    
+        public function performReadonlyTransformation() {
+                return clone $this;
+        }
+    
+        public function Value() {
+                return Convert::raw2xml($this->value ? "$this->value" : "0");
+        }
 }
