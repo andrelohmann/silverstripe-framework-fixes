@@ -1666,6 +1666,7 @@ class DataObject extends ViewableData implements DataObjectInterface, i18nEntity
 	 */
 	public function db($fieldName = null) {
 		$classes = ClassInfo::ancestry($this, true);
+
 		// If we're looking for a specific field, we want to hit subclasses first as they may override field types
 		if($fieldName) {
 			$classes = array_reverse($classes);
@@ -1673,7 +1674,6 @@ class DataObject extends ViewableData implements DataObjectInterface, i18nEntity
 
 		$items = array();
 		foreach($classes as $class) {
-
 			if(isset(self::$_cache_db[$class])) {
 				$dbItems = self::$_cache_db[$class];
 			} else {
@@ -1796,10 +1796,9 @@ class DataObject extends ViewableData implements DataObjectInterface, i18nEntity
 					}
 				}
 				
-			} else {
-				
+			} else {	
 				// Find all the extra fields for all components
-				$newItems = eval("return (array){$class}::\$many_many_extraFields;");
+				$newItems = (array)Config::inst()->get($class, 'many_many_extraFields', Config::UNINHERITED);
 				
 				foreach($newItems as $k => $v) {
 					if(!is_array($v)) {
@@ -1812,9 +1811,11 @@ class DataObject extends ViewableData implements DataObjectInterface, i18nEntity
 					}
 				}
 					
-				return isset($items) ? array_merge($newItems, $items) : $newItems;
+				$items = isset($items) ? array_merge($newItems, $items) : $newItems;
 			}
 		}
+
+		return isset($items) ? $items : null;
 	}
 	
 	/**
@@ -1846,14 +1847,14 @@ class DataObject extends ViewableData implements DataObjectInterface, i18nEntity
 				// Try belongs_many_many
 				$belongsManyMany = Config::inst()->get($class, 'belongs_many_many', Config::UNINHERITED);
 				$candidate = (isset($belongsManyMany[$component])) ? $belongsManyMany[$component] : null;
-				if($candidate) {
-					
+				if($candidate) {			
+                                    
 					// If $candidate is of dot notation for multiple many_many relations to the same class
 					if(strpos($candidate,'.') !== FALSE){
 						$candidate=explode('.', $candidate);
 						$candidate=$candidate[0];
 					}
-                                        
+
 					$childField = $candidate . "ID";
 
 					// We need to find the inverse component name
@@ -2327,7 +2328,6 @@ class DataObject extends ViewableData implements DataObjectInterface, i18nEntity
 				user_error('DataObject::setField: passed an object that is not a DBField', E_USER_WARNING);
 			}
 		
-			$defaults = $this->stat('defaults');
 			// if a field is not existing or has strictly changed
 			if(!isset($this->record[$fieldName]) || $this->record[$fieldName] !== $val) {
 				// TODO Add check for php-level defaults which are not set in the db
@@ -3442,6 +3442,8 @@ class DataObject extends ViewableData implements DataObjectInterface, i18nEntity
 	 * @var array
 	 */
 	private static $casting = array(
+		"ID" => 'Int',
+		"ClassName" => 'Varchar',
 		"LastEdited" => "SS_Datetime",
 		"Created" => "SS_Datetime",
 		"Title" => 'Text',
