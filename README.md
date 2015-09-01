@@ -5,20 +5,25 @@
  * Andre Lohmann (Nickname: andrelohmann)
   <lohmann dot andre at googlemail dot com>
 
+## Requirements
+
+Silverstripe 3.2.0-rc1
+
 ## Introduction
 
 This repository includes Fixes for the current Version of the Silverstripe Framework Module.
 
-Current stable Version is: 3.1.13
+Current Version is: 3.2.0-rc1
 
 ## Installation
 
 overwrite silverstripe frameworkfolder with the frameworkfolder from this repository.
 
 ### Notice
- * After each Update, set the new Tag
+This repository uses the git flow paradigm.
+After each release cycle, do not forget to push tags, master and develop to the remote origin
 ```
-git tag -a v1.2.3.4 -m 'Version 1.2.3.4'
-git push -u origin v1.2.3.4
+git push --tags
+git push origin develop
+git push origin master
 ```
- * Also update the requirements in andrelohmann/silverstripe-apptemplate
