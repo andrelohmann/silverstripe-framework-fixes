@@ -125,7 +125,7 @@ class Zend_Cache_Backend_Redis extends Zend_Cache_Backend implements Zend_Cache_
 			$server['port'] = self::DEFAULT_PORT;
         }
 		if (!array_key_exists('timeout', $server)) {
-            $server['timeout'] = self::DEFAULT_WEIGHT;
+            $server['timeout'] = self::DEFAULT_TIMEOUT;
         }
 		
 		$this->_redis->connect($server['host'], $server['port'], $server['timeout']);
