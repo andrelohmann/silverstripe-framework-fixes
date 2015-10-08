@@ -247,10 +247,6 @@ class Zend_Cache_Backend_Redis extends Zend_Cache_Backend implements Zend_Cache_
     {
         parent::setDirectives($directives);
         $lifetime = $this->getLifetime(false);
-        if ($lifetime > 2592000) {
-            // #ZF-3490 : For the memcached backend, there is a lifetime limit of 30 days (2592000 seconds)
-            $this->_log('memcached backend has a limit of 30 days (2592000 seconds) for the lifetime');
-        }
         if ($lifetime === null) {
             // #ZF-4614 : we tranform null to zero to get the maximal lifetime
             parent::setDirectives(array('lifetime' => 0));
