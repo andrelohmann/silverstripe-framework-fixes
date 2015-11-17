@@ -188,14 +188,14 @@ class RequestHandler extends ViewableData {
 			user_error("Non-string method name: " . var_export($action, true), E_USER_ERROR);
 		}
 
-		$className = get_class($this);
+		$classMessage = Director::isLive() ? 'on this handler' : 'on class '.get_class($this);
 
 		try {
 			if(!$this->hasAction($action)) {
-				return $this->httpError(404, "Action '$action' isn't available on class $className.");
+				return $this->httpError(404, "Action '$action' isn't available $classMessage.");
 			}
 			if(!$this->checkAccessAction($action) || in_array(strtolower($action), array('run', 'init'))) {
-				return $this->httpError(403, "Action '$action' isn't allowed on class $className.");
+				return $this->httpError(403, "Action '$action' isn't allowed $classMessage.");
 			}
 			$result = $this->handleAction($request, $action);
 		}
@@ -232,7 +232,7 @@ class RequestHandler extends ViewableData {
 
 		// But if we have more content on the URL and we don't know what to do with it, return an error.
 		} else {
-			return $this->httpError(404, "I can't handle sub-URLs of a $this->class object.");
+			return $this->httpError(404, "I can't handle sub-URLs $classMessage.");
 		}
 
 		return $this;
@@ -276,10 +276,10 @@ class RequestHandler extends ViewableData {
 	 * @return SS_HTTPResponse
 	 */
 	protected function handleAction($request, $action) {
-		$className = get_class($this);
+		$classMessage = Director::isLive() ? 'on this handler' : 'on class '.get_class($this);
 
 		if(!$this->hasMethod($action)) {
-			return new SS_HTTPResponse("Action '$action' isn't available on class $className.", 404);
+			return new SS_HTTPResponse("Action '$action' isn't available $classMessage.", 404);
 		}
 
 		$res = $this->extend('beforeCallActionHandler', $request, $action);
@@ -351,7 +351,7 @@ class RequestHandler extends ViewableData {
 		if($action == 'index') return true;
 
 		// Don't allow access to any non-public methods (inspect instance plus all extensions)
-		$insts = array_merge(array($this), (array)$this->getExtensionInstances());
+		$insts = array_merge(array($this), (array) $this->getExtensionInstances());
 		foreach($insts as $inst) {
 			if(!method_exists($inst, $action)) continue;
 			$r = new ReflectionClass(get_class($inst));
@@ -389,7 +389,7 @@ class RequestHandler extends ViewableData {
 		$action = strtolower($actionOrigCasing);
 
 		$definingClass = null;
-		$insts = array_merge(array($this), (array)$this->getExtensionInstances());
+		$insts = array_merge(array($this), (array) $this->getExtensionInstances());
 		foreach($insts as $inst) {
 			if(!method_exists($inst, $action)) continue;
 			$r = new ReflectionClass(get_class($inst));
